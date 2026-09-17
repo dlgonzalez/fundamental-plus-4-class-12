@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fundamental Plus 4 – Unit 12, Class 12: Developing Your Network</title>
+<style>
+:root{
+--primary:#6366F1;--primary-light:#818CF8;
+--secondary:#059669;--accent:#F59E0B;
+--bg:#0F172A;--surface:#1E293B;--surface-light:#334155;
+--text:#F1F5F9;--muted:#94A3B8;--border:#475569;
+--success:#34D399;--error:#F87171;
+--radius:16px;--shadow:0 8px 32px rgba(0,0,0,0.4);
+--font:'Segoe UI',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);padding:16px;line-height:1.6;min-height:100vh;background-image:radial-gradient(ellipse at 20% 50%,#6366F122 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,#F59E0B22 0%,transparent 50%);}
+.app{max-width:1150px;margin:0 auto;}
+.header{background:linear-gradient(135deg,#6366F1,#4338CA);padding:20px 28px;border-radius:var(--radius);margin-bottom:20px;box-shadow:var(--shadow);border:1px solid var(--primary-light);}
+.header-top{display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.header-logo{height:50px;filter:brightness(0) invert(1);flex-shrink:0;}
+.header-text{flex:1;}
+.header h1{font-size:1.8rem;font-weight:800;letter-spacing:-0.5px;}
+.header .sub{font-size:1.1rem;opacity:0.85;}
+.header .meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:0.8rem;background:rgba(255,255,255,0.06);padding:10px 16px;border-radius:10px;}
+.header .meta span{background:rgba(255,255,255,0.08);padding:2px 12px;border-radius:20px;}
+.objectives{margin-top:14px;background:rgba(255,255,255,0.06);padding:14px 18px;border-radius:10px;border-left:4px solid var(--accent);}
+.objectives ul{margin-left:20px;list-style:disc;font-size:0.9rem;opacity:0.9;}
+.xp-bar{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:50px;padding:8px 18px 8px 22px;margin-bottom:20px;box-shadow:var(--shadow);}
+.xp-label{font-weight:700;font-size:0.8rem;color:var(--accent);}
+.xp-track{flex:1;height:8px;background:var(--border);border-radius:99px;overflow:hidden;}
+.xp-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--success));border-radius:99px;transition:width 0.6s ease;}
+.xp-score{font-weight:800;font-size:1.1rem;min-width:50px;text-align:right;}
+.tab-nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:20px;flex-wrap:wrap;}
+.tab-btn{background:var(--surface);border:2px solid var(--border);padding:10px 18px;border-radius:50px;font-weight:700;font-size:0.78rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;color:var(--muted);}
+.tab-btn:hover{border-color:var(--primary-light);color:var(--text);}
+.tab-btn.active{background:var(--primary);border-color:var(--primary);color:white;box-shadow:0 0 20px #6366F144;}
+.tab-content{display:none;background:var(--surface);padding:24px;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);animation:fade 0.3s ease;}
+.tab-content.active{display:block;}
+@keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.section-title{font-size:1.5rem;font-weight:800;margin-bottom:16px;background:linear-gradient(135deg,var(--primary-light),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:inline-block;}
+.bridge{background:rgba(99,102,241,0.12);border-left:4px solid var(--primary-light);padding:14px 18px;border-radius:8px;margin-bottom:20px;font-style:italic;color:var(--muted);}
+.bridge strong{color:var(--text);}
+.card{background:var(--surface-light);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:18px;}
+.card h3{color:var(--primary-light);margin-bottom:8px;font-size:1.1rem;}
+.card h4{color:var(--accent);margin-bottom:6px;}
+.btn{background:var(--primary);color:white;border:none;padding:10px 24px;border-radius:50px;font-weight:700;cursor:pointer;transition:all 0.2s;font-size:0.9rem;}
+.btn:hover{transform:scale(1.04);box-shadow:0 0 20px #6366F166;}
+.btn.secondary{background:var(--secondary);}
+.btn.accent{background:var(--accent);color:#0F172A;}
+.btn.small{padding:6px 16px;font-size:0.8rem;}
+.btn.outline{background:transparent;border:2px solid var(--primary-light);color:var(--primary-light);}
+.btn.outline:hover{background:var(--primary-light);color:white;}
+.btn:disabled{opacity:0.4;cursor:default;transform:none!important;}
+.sb-input{background:var(--surface);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px;width:100%;font-family:inherit;}
+.sb-input:focus{outline:none;border-color:var(--primary-light);}
+.blank-input{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:4px 10px;color:var(--text);font-family:inherit;width:140px;transition:border-color 0.2s;}
+.blank-input:focus{border-color:var(--primary-light);outline:none;}
+.blank-input.correct{border-color:var(--success);background:#05966922;}
+.blank-input.wrong{border-color:var(--error);background:#F8717122;}
+.quiz-arena{background:var(--surface);border:3px solid var(--accent);border-radius:16px;padding:20px;text-align:center;}
+.quiz-stats{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-weight:700;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.quiz-stats span{color:var(--accent);}
+.quiz-question{font-size:1.1rem;font-weight:700;min-height:80px;padding:16px;background:var(--surface-light);border-radius:10px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:12px 0;line-height:1.5;}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:640px;margin:12px auto;}
+.quiz-options button{padding:12px 14px;border-radius:10px;background:var(--surface-light);border:2px solid var(--border);color:var(--text);font-weight:600;cursor:pointer;transition:all 0.2s;font-size:0.88rem;text-align:left;}
+.quiz-options button:hover:not(:disabled){border-color:var(--primary-light);transform:scale(1.02);}
+.quiz-options button:disabled{opacity:0.5;cursor:default;}
+.quiz-options button.correct{border-color:var(--success);background:#05966922;}
+.quiz-options button.wrong{border-color:var(--error);background:#F8717122;}
+.quiz-timer{font-size:1.5rem;font-weight:800;color:var(--accent);}
+.quiz-timer.urgent{color:var(--error);}
+.grammar-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:0.9rem;}
+.grammar-table th,.grammar-table td{border:1px solid var(--border);padding:8px 12px;text-align:left;}
+.grammar-table th{background:var(--primary);color:white;font-weight:700;}
+.grammar-table tr:nth-child(even) td{background:rgba(255,255,255,0.03);}
+.cc-box{background:rgba(245,158,11,0.08);border:1px solid #F59E0B44;border-radius:12px;padding:14px 18px;margin:12px 0;}
+.cc-phrase{display:inline-block;background:var(--surface);border:1px solid var(--border);padding:4px 12px;border-radius:20px;margin:3px;font-weight:600;font-size:0.8rem;}
+.rule-box{background:rgba(99,102,241,0.08);border-left:4px solid var(--primary-light);padding:14px 18px;border-radius:8px;margin:12px 0;}
+.rule-box h4{color:var(--primary-light);margin-bottom:6px;}
+.rule-box .example{font-family:'Courier New',monospace;background:var(--surface);padding:8px 12px;border-radius:6px;margin:6px 0;font-size:0.85rem;}
+.scenario-card{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;transition:all 0.3s;}
+.scenario-card:hover{border-color:var(--primary-light);transform:translateY(-2px);}
+.scenario-card h4{color:var(--accent);margin-bottom:8px;}
+.scenario-card p{color:var(--muted);font-size:0.9rem;line-height:1.6;}
+.scenario-card .must-use{background:rgba(245,158,11,0.15);border:1px solid var(--accent);border-radius:8px;padding:8px 12px;margin-top:10px;font-size:0.85rem;}
+.scenario-card .must-use strong{color:var(--accent);}
+.verdict-btn{padding:14px 20px;border-radius:12px;font-weight:700;font-size:1rem;cursor:pointer;transition:all 0.2s;border:2px solid var(--border);background:var(--surface-light);color:var(--text);min-width:120px;}
+.verdict-btn:hover:not(:disabled){transform:scale(1.05);}
+.verdict-btn.do-btn:hover{border-color:var(--success);background:#05966922;}
+.verdict-btn.dont-btn:hover{border-color:var(--error);background:#F8717122;}
+.verdict-btn.creepy-btn:hover{border-color:var(--accent);background:#F59E0B22;}
+.verdict-btn.correct{border-color:var(--success);background:#05966922;}
+.verdict-btn.wrong{border-color:var(--error);background:#F8717122;}
+.teacher-answers{background:var(--surface);border:2px solid var(--accent);border-radius:12px;padding:20px;margin-top:20px;display:none;}
+.teacher-answers.show{display:block;}
+.teacher-answers h3{color:var(--accent);margin-bottom:12px;}
+.teacher-answers .answer-block{background:var(--surface-light);border-radius:8px;padding:12px 16px;margin-bottom:10px;border-left:4px solid var(--success);font-size:0.9rem;}
+.teacher-answers .answer-block strong{color:var(--success);}
+.badge{display:inline-block;background:var(--accent);color:#0F172A;padding:8px 24px;border-radius:50px;font-weight:800;font-size:1.2rem;margin-top:12px;}
+@keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-6px);}60%{transform:translateX(6px);}}
+@media(max-width:700px){
+.header h1{font-size:1.3rem;}
+.header-logo{height:35px;}
+.tab-btn{font-size:0.68rem;padding:8px 12px;}
+.tab-content{padding:16px;}
+.blank-input{width:100px;}
+.quiz-options{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header">
+<div class="header-top">
+<img class="header-logo" src="https://www.colomboamericano.edu.co/wp-content/uploads/2024/06/Logo-Colombo-Horizontal.png" alt="Colombo Americano"/>
+<div class="header-text">
+<h1>🤝 Fundamental Plus 4 – Unit 12, Class 12</h1>
+<div class="sub">Developing Your Network · Professional Connections</div>
+</div>
+</div>
+<div class="meta">
+<span>📚 Class 12</span>
+<span>🎯 B1+ Level</span>
+<span>⏱ 2 hours</span>
+<span>👥 Virtual · Synchronous</span>
+</div>
+<div class="objectives">
+<strong>🎯 Today's Missions:</strong>
+<ul>
+<li>Master <strong>networking vocabulary</strong> in real contexts</li>
+<li>Practice <strong>5 verb tenses</strong> to talk about career experiences</li>
+<li>Learn <strong>confidence language</strong>: probably/definitely</li>
+<li>Build your <strong>personal network map</strong></li>
+<li>Complete a <strong>real speed networking</strong> simulation</li>
+</ul>
+</div>
+</header>
+
+<div class="xp-bar">
+<span class="xp-label">⚡ XP</span>
+<div class="xp-track"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+<span class="xp-score" id="xp-score">0</span>
+</div>
+
+<nav class="tab-nav" id="tab-nav">
+<button class="tab-btn active" data-tab="tab-warmup">🎭 1. Networking Do's & Don'ts</button>
+<button class="tab-btn" data-tab="tab-vocab">🧠 2. Vocabulary Scenarios</button>
+<button class="tab-btn" data-tab="tab-listening">🎧 3. Listening</button>
+<button class="tab-btn" data-tab="tab-grammar">⚙ 4. Tense Timeline</button>
+<button class="tab-btn" data-tab="tab-speaking">🗣 5. Speed Networking</button>
+<button class="tab-btn" data-tab="tab-network">🗺 6. My Network Map</button>
+<button class="tab-btn" data-tab="tab-wrapup">🏆 7. Action Plan</button>
+<button class="tab-btn" data-tab="tab-answers" style="background:var(--accent);color:#0F172A;">🎓 Teacher Answers</button>
+</nav>
+
+<main>
+
+<!-- WARM-UP -->
+<section id="tab-warmup" class="tab-content active">
+<h2 class="section-title">🎭 Warm-up: Networking Do's & Don'ts</h2>
+<div class="bridge">
+Welcome to Class 12! 🤝<br>
+Before we learn about networking, let's figure out what makes a <strong>GREAT</strong> networker vs. a <strong>TERRIBLE</strong> one.
+<br><br>
+<strong>The game:</strong> I'll show you a networking situation. You vote: is it a <span style="color:var(--success);font-weight:700;">DO ✅</span>, a <span style="color:var(--error);font-weight:700;">DON'T ❌</span>, or <span style="color:var(--accent);font-weight:700;">CREEPY 👀</span>?
+</div>
+
+<div class="card" style="border:2px solid var(--accent);">
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
+<span style="font-weight:700;color:var(--accent);">🎯 Situation: <span id="do-dont-round">1</span> / 10</span>
+<span style="font-weight:700;color:var(--accent);">⭐ Score: <span id="do-dont-score">0</span></span>
+</div>
+
+<div class="quiz-question" id="do-dont-situation" style="min-height:100px;font-size:1.05rem;">
+Click "Start Game" to begin! 🎲
+</div>
+
+<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:16px 0;" id="do-dont-buttons">
+<button class="verdict-btn do-btn" onclick="voteVerdict('do')">✅ DO</button>
+<button class="verdict-btn dont-btn" onclick="voteVerdict('dont')">❌ DON'T</button>
+<button class="verdict-btn creepy-btn" onclick="voteVerdict('creepy')">👀 CREEPY</button>
+</div>
+
+<div id="do-dont-fb" style="font-weight:700;text-align:center;min-height:24px;margin-top:10px;"></div>
+
+<div style="text-align:center;margin-top:14px;">
+<button class="btn accent" onclick="startDoDont()" id="do-dont-start-btn">🚀 Start Game</button>
+<button class="btn small outline" onclick="nextDoDont()" id="do-dont-next-btn" style="display:none;">➡️ Next Situation</button>
+</div>
+</div>
+
+<div class="card" style="border:2px solid var(--primary-light);">
+<h3>💬 After the Game – Discuss in Pairs</h3>
+<ul style="margin-left:20px;line-height:2.2;color:var(--muted);font-size:0.95rem;">
+<li>Which situation was the MOST awkward? Why?</li>
+<li>Have you ever done something like this? (Be honest! 😄)</li>
+<li>What's the WORST networking mistake you've ever seen?</li>
+</ul>
+</div>
+
+<div class="bridge">🎭 Great warm-up! Now let's learn the vocabulary you need for professional networking. 🧠</div>
+</section>
+
+
+<!-- LISTENING -->
+<section id="tab-listening" class="tab-content">
+<h2 class="section-title">🎧 Listening: Networking Advice</h2>
+<div class="bridge">
+📖 <strong>Open your books to page 119.</strong><br><br>
+Your teacher will play <strong>audio 12.03</strong> — a radio show about networking. Listen carefully and complete the activities below.
+</div>
+
+<div class="card">
+<h3>🎯 Before You Listen</h3>
+<p style="color:var(--muted);margin-bottom:12px;">Read this statement and decide if you agree or disagree:</p>
+<div style="background:var(--surface);border-radius:10px;padding:16px;margin:12px 0;border-left:4px solid var(--accent);">
+<p style="font-size:1.05rem;font-weight:600;line-height:1.6;">"It's not what you know that's important—it's who you know."</p>
+</div>
+<div style="display:flex;gap:10px;margin-top:12px;">
+<button class="btn small" onclick="agreeStatement(true)">I Agree</button>
+<button class="btn small outline" onclick="agreeStatement(false)">I Disagree</button>
+</div>
+<div id="agree-fb" style="font-weight:700;margin-top:10px;"></div>
+</div>
+
+<div class="card" style="border:2px solid var(--primary-light);">
+<h3>📝 While You Listen: Check the Advice</h3>
+<p style="color:var(--muted);margin-bottom:12px;">Listen to the radio show and check (✓) the advice the speaker gives:</p>
+<div style="margin-top:12px;">
+<label style="display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;">
+<input type="checkbox" id="adv1" style="width:20px;height:20px;">
+<span>speak to people in your office</span>
+</label>
+<label style="display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;">
+<input type="checkbox" id="adv2" style="width:20px;height:20px;">
+<span>speak to members of your family</span>
+</label>
+<label style="display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;">
+<input type="checkbox" id="adv3" style="width:20px;height:20px;">
+<span>speak to old school friends</span>
+</label>
+<label style="display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;">
+<input type="checkbox" id="adv4" style="width:20px;height:20px;">
+<span>join online groups</span>
+</label>
+<label style="display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;">
+<input type="checkbox" id="adv5" style="width:20px;height:20px;">
+<span>research companies online</span>
+</label>
+<label style="display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;">
+<input type="checkbox" id="adv6" style="width:20px;height:20px;">
+<span>go to career fairs</span>
+</label>
+<label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+<input type="checkbox" id="adv7" style="width:20px;height:20px;">
+<span>write to companies</span>
+</label>
+</div>
+<button class="btn small primary" onclick="checkAdvice()" style="margin-top:12px;">✅ Check My Answers</button>
+<div id="advice-fb" style="font-weight:700;margin-top:8px;"></div>
+</div>
+
+<div class="card" style="border:2px solid var(--accent);">
+<h3>✍️ Listen Again: Complete the Sentences</h3>
+<p style="color:var(--muted);margin-bottom:12px;">Listen again and complete with the words or phrases you hear:</p>
+<div style="background:var(--surface);border-radius:10px;padding:16px;line-height:2.2;">
+<p>1. You can learn a lot from <input type="text" class="blank-input" style="width:140px;" id="l1"> people in your office.</p>
+<p>2. When you leave a job, it's a good idea to <input type="text" class="blank-input" style="width:160px;" id="l2"> with people.</p>
+<p>3. Ask questions, <input type="text" class="blank-input" style="width:140px;" id="l3">, and post comments in online groups.</p>
+<p>4. In online groups, you might be the first to hear about <input type="text" class="blank-input" style="width:180px;" id="l4">.</p>
+<p>5. You could ask companies about working as <input type="text" class="blank-input" style="width:140px;" id="l5">.</p>
+<p>6. In speed networking, you talk to each person for <input type="text" class="blank-input" style="width:140px;" id="l6">.</p>
+</div>
+<button class="btn small primary" onclick="checkListening()" style="margin-top:12px;">✅ Check My Answers</button>
+<div id="listening-fb" style="font-weight:700;margin-top:8px;"></div>
+</div>
+
+<div class="bridge">🎧 Great listening! Now let's practice the grammar you need to talk about your career. ⚙</div>
+</section>
+
+<!-- VOCABULARY -->
+<section id="tab-vocab" class="tab-content">
+<h2 class="section-title">🧠 Vocabulary: Networking Scenarios</h2>
+<div class="bridge">
+Instead of just filling in blanks, let's <strong>USE</strong> these words in real situations!
+<br><br>
+<strong>Vocabulary to master:</strong> contact, get to know, intern, introduce yourself, job hunting, make time for, stay in touch
+</div>
+
+<div class="card" style="border:2px solid var(--primary-light);">
+<h3>📚 Vocabulary Flashcards</h3>
+<p style="color:var(--muted);margin-bottom:12px;">Click each card to reveal the meaning and example:</p>
+<div id="vocab-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;"></div>
+</div>
+
+<div class="card" style="border:2px solid var(--accent);">
+<h3>🎭 Role-Play Scenarios</h3>
+<p style="color:var(--muted);margin-bottom:16px;">In pairs, choose a scenario and create a 2-minute dialogue using at least 3 vocabulary words.</p>
+
+<div class="scenario-card">
+<h4>Scenario 1: The Awkward Party 🎉</h4>
+<p>You're at a party where you know NOBODY. Your friend left you alone. You need to meet at least 3 people.</p>
+<div class="must-use"><strong>Must use:</strong> introduce yourself, get to know, contact</div>
+</div>
+
+<div class="scenario-card">
+<h4>Scenario 2: The Internship Dilemma 💼</h4>
+<p>You want to be an intern at a company, but you don't know anyone there.</p>
+<div class="must-use"><strong>Must use:</strong> job hunting, intern, make time for</div>
+</div>
+
+<div class="scenario-card">
+<h4>Scenario 3: The Forgotten Friend 👋</h4>
+<p>You haven't talked to your best friend from high school in 2 years. You just got a job.</p>
+<div class="must-use"><strong>Must use:</strong> stay in touch, make time for, contact</div>
+</div>
+
+<div class="scenario-card">
+<h4>Scenario 4: The Career Fair Chaos 🏢</h4>
+<p>You're at a career fair with 50 companies. You have 30 minutes.</p>
+<div class="must-use"><strong>Must use:</strong> introduce yourself, contact, get to know</div>
+</div>
+
+<textarea id="dialogue-text" rows="6" class="sb-input" placeholder="Write your dialogue here...&#10;&#10;Person A: Hi, I'm [name]. I'd like to introduce myself...&#10;Person B: Nice to meet you!" style="margin-top:16px;"></textarea>
+<button class="btn secondary" onclick="saveDialogue()" style="margin-top:12px;">💾 Save My Dialogue (+10 XP)</button>
+<div id="dialogue-fb" style="font-weight:700;margin-top:8px;"></div>
+</div>
+
+<div class="card" style="border:2px solid var(--secondary);">
+<h3>🎯 Quick Check: Fill in the Blanks</h3>
+<p style="color:var(--muted);margin-bottom:12px;">Complete these sentences with the correct vocabulary word:</p>
+<div style="background:var(--surface);border-radius:10px;padding:16px;line-height:2.2;">
+<p>1. When you meet someone new, you <input type="text" class="blank-input" style="width:120px;" id="v1"> them.</p>
+<p>2. An <input type="text" class="blank-input" style="width:120px;" id="v2"> works for experience, usually without pay.</p>
+<p>3. When you're looking for work, you are <input type="text" class="blank-input" style="width:120px;" id="v3">.</p>
+<p>4. To continue communicating with an old friend, you <input type="text" class="blank-input" style="width:140px;" id="v4"> with them.</p>
+<p>5. When you fit something into your schedule, you <input type="text" class="blank-input" style="width:140px;" id="v5"> it.</p>
+<p>6. Someone you know in a profession is a <input type="text" class="blank-input" style="width:120px;" id="v6">.</p>
+<p>7. When you say hello to someone for the first time, you <input type="text" class="blank-input" style="width:180px;" id="v7">.</p>
+</div>
+<button class="btn small primary" onclick="checkVocabFill()" style="margin-top:12px;">✅ Check Answers</button>
+<div id="vocab-fill-fb" style="font-weight:700;margin-top:8px;"></div>
+</div>
+
+<div class="bridge">🧠 Great vocabulary work! Now let's listen to some real networking advice. 🎧</div>
+</section>
+
+
+<!-- GRAMMAR -->
+<section id="tab-grammar" class="tab-content">
+<h2 class="section-title">⚙ Grammar: Your Career Timeline</h2>
+<div class="bridge">
+Instead of just choosing answers, let's <strong>CREATE</strong> with the tenses!
+</div>
+
+<div class="card" style="border:2px solid var(--primary-light);">
+<h3>📚 The 5 Tenses Review</h3>
+<table class="grammar-table">
+<thead><tr><th>Tense</th><th>Use</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td><strong>Present Simple</strong></td><td>Present state/habit</td><td>My contact <strong>works</strong> in accounting.</td></tr>
+<tr><td><strong>Present Continuous</strong></td><td>Action in progress now</td><td>I <strong>am looking</strong> for an internship.</td></tr>
+<tr><td><strong>Past Simple</strong></td><td>Past state/habit</td><td>I <strong>was nervous</strong> when I started.</td></tr>
+<tr><td><strong>Past Continuous</strong></td><td>Action in progress at past moment</td><td>I <strong>was chatting</strong> when you called.</td></tr>
+<tr><td><strong>Present Perfect</strong></td><td>Action at unspecific time in past</td><td><strong>Have</strong> you <strong>spoken</strong> to your friends?</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card" style="border:2px solid var(--accent);">
+<h3>🎯 Quick Match: Function to Example</h3>
+<p style="color:var(--muted);margin-bottom:12px;">Match each sentence to its function:</p>
+<div style="margin-top:12px;">
+<div style="margin-bottom:12px;">
+<strong style="color:var(--accent);">1. My contact works in the accounting department.</strong>
+<select id="g1" class="sb-input" style="width:auto;display:inline-block;margin-left:10px;">
+<option value="">-- Select --</option>
+<option value="a">a. a past state or habit</option>
+<option value="b">b. an action in progress at a past moment</option>
+<option value="c">c. a present state or habit</option>
+<option value="d">d. an action in progress now</option>
+<option value="e">e. an action at an unspecific time in the past</option>
+</select>
+</div>
+<div style="margin-bottom:12px;">
+<strong style="color:var(--accent);">2. I am looking for an internship.</strong>
+<select id="g2" class="sb-input" style="width:auto;display:inline-block;margin-left:10px;">
+<option value="">-- Select --</option>
+<option value="a">a. a past state or habit</option>
+<option value="b">b. an action in progress at a past moment</option>
+<option value="c">c. a present state or habit</option>
+<option value="d">d. an action in progress now</option>
+<option value="e">e. an action at an unspecific time in the past</option>
+</select>
+</div>
+<div style="margin-bottom:12px;">
+<strong style="color:var(--accent);">3. I was nervous when I started working here.</strong>
+<select id="g3" class="sb-input" style="width:auto;display:inline-block;margin-left:10px;">
+<option value="">-- Select --</option>
+<option value="a">a. a past state or habit</option>
+<option value="b">b. an action in progress at a past moment</option>
+<option value="c">c. a present state or habit</option>
+<option value="d">d. an action in progress now</option>
+<option value="e">e. an action at an unspecific time in the past</option>
+</select>
+</div>
+<div style="margin-bottom:12px;">
+<strong style="color:var(--accent);">4. I was chatting to a colleague when you called me.</strong>
+<select id="g4" class="sb-input" style="width:auto;display:inline-block;margin-left:10px;">
+<option value="">-- Select --</option>
+<option value="a">a. a past state or habit</option>
+<option value="b">b. an action in progress at a past moment</option>
+<option value="c">c. a present state or habit</option>
+<option value="d">d. an action in progress now</option>
+<option value="e">e. an action at an unspecific time in the past</option>
+</select>
+</div>
+<div style="margin-bottom:12px;">
+<strong style="color:var(--accent);">5. Have you spoken to your friends about their career plans?</strong>
+<select id="g5" class="sb-input" style="width:auto;display:inline-block;margin-left:10px;">
+<option value="">-- Select --</option>
+<option value="a">a. a past state or habit</option>
+<option value="b">b. an action in progress at a past moment</option>
+<option value="c">c. a present state or habit</option>
+<option value="d">d. an action in progress now</option>
+<option value="e">e. an action at an unspecific time in the past</option>
+</select>
+</div>
+</div>
+<button class="btn small primary" onclick="checkGrammarMatch()" style="margin-top:12px;">✅ Check</button>
+<div id="grammar-match-fb" style="font-weight:700;margin-top:8px;"></div>
+</div>
+
+<div class="card" style="border:2px solid var(--secondary);">
+<h3>🎨 Create Your Career Timeline</h3>
+<p style="color:var(--muted);margin-bottom:12px;">Write ONE sentence for each section using the correct tense:</p>
+
+<div style="background:var(--surface);border-radius:10px;padding:16px;margin:12px 0;">
+<div style="margin-bottom:16px;">
+<label style="font-weight:700;color:var(--accent);display:block;margin-bottom:6px;">📅 PAST HABIT (Past Simple)</label>
+<p style="font-size:0.85rem;color:var(--muted);margin-bottom:6px;">Example: "I worked part-time when I was in high school."</p>
+<textarea rows="2" class="sb-input" placeholder="Write about a past job or habit..."></textarea>
+</div>
+<div style="margin-bottom:16px;">
+<label style="font-weight:700;color:var(--accent);display:block;margin-bottom:6px;">⏰ PAST MOMENT (Past Continuous)</label>
+<p style="font-size:0.85rem;color:var(--muted);margin-bottom:6px;">Example: "I was studying when my friend called about the job."</p>
+<textarea rows="2" class="sb-input" placeholder="Write about what you were doing at a specific past moment..."></textarea>
+</div>
+<div style="margin-bottom:16px;">
+<label style="font-weight:700;color:var(--accent);display:block;margin-bottom:6px;">🎯 PRESENT NOW (Present Continuous)</label>
+<p style="font-size:0.85rem;color:var(--muted);margin-bottom:6px;">Example: "I am looking for an internship."</p>
+<textarea rows="2" class="sb-input" placeholder="Write about what you're doing right now..."></textarea>
+</div>
+<div style="margin-bottom:16px;">
+<label style="font-weight:700;color:var(--accent);display:block;margin-bottom:6px;">🔄 PRESENT HABIT (Present Simple)</label>
+<p style="font-size:0.85rem;color:var(--muted);margin-bottom:6px;">Example: "I attend networking events every month."</p>
+<textarea rows="2" class="sb-input" placeholder="Write about something you do regularly..."></textarea>
+</div>
+<div>
+<label style="font-weight:700;color:var(--accent);display:block;margin-bottom:6px;">✨ EXPERIENCE (Present Perfect)</label>
+<p style="font-size:0.85rem;color:var(--muted);margin-bottom:6px;">Example: "I have spoken to 10 professionals this year."</p>
+<textarea rows="2" class="sb-input" placeholder="Write about something you've done..."></textarea>
+</div>
+</div>
+
+<button class="btn secondary" onclick="saveTimeline()" style="margin-top:12px;">💾 Save My Timeline (+10 XP)</button>
+<div id="timeline-fb" style="font-weight:700;margin-top:8px;"></div>
+</div>
+
+<div class="bridge">⚙ Excellent grammar work! Now let's practice REAL networking. 🗣</div>
+</section>
+
+<!-- SPEAKING -->
+<section id="tab-speaking" class="tab-content">
+<h2 class="section-title">🗣 Speaking: Speed Networking Event</h2>
+<div class="bridge">
+Let's actually <strong>PRACTICE</strong> networking! This is a real speed networking simulation.
+</div>
+
+<div class="card" style="border:2px solid var(--accent);">
+<h3>🎯 Step 1: Create Your Networking Mission</h3>
+<p style="color:var(--muted);margin-bottom:12px;">Choose your mission for today's speed networking event:</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin:12px 0;">
+<div class="scenario-card" style="cursor:pointer;" onclick="selectMission('A')">
+<h4>Mission A: Same Career</h4>
+<p>Find someone who wants the same career as you</p>
+</div>
+<div class="scenario-card" style="cursor:pointer;" onclick="selectMission('B')">
+<h4>Mission B: Dream Company</h4>
+<p>Find someone who has a contact in your dream company</p>
+</div>
+<div class="scenario-card" style="cursor:pointer;" onclick="selectMission('C')">
+<h4>Mission C: Introduction</h4>
+<p>Find someone who can introduce you to someone else</p>
+</div>
+<div class="scenario-card" style="cursor:pointer;" onclick="selectMission('D')">
+<h4>Mission D: Experience</h4>
+<p>Find someone who has internship experience</p>
+</div>
+<div class="scenario-card" style="cursor:pointer;" onclick="selectMission('E')">
+<h4>Mission E: Advice</h4>
+<p>Find someone who can give you advice about job hunting</p>
+</div>
+</div>
+<div id="mission-fb" style="font-weight:700;margin-top:10px;"></div>
+</div>
+
+<div class="card" style="border:2px solid var(--primary-light);">
+<h3>🎤 Step 2: Prepare Your Elevator Pitch (30 seconds)</h3>
+<p style="color:var(--muted);margin-bottom:12px;">Your pitch must include:</p>
+<ul style="margin-left:20px;line-height:2;color:var(--muted);font-size:0.9rem;">
+<li>Who are you?</li>
+<li>What are you studying/looking for?</li>
+<li>What do you need help with?</li>
+<li>Use "probably/definitely" language</li>
+</ul>
+
+<div class="cc-box">
+<strong>💬 Confident Communicator:</strong><br>
+<span class="cc-phrase">I will definitely...</span>
+<span class="cc-phrase">I'll probably...</span>
+<span class="cc-phrase">I definitely won't...</span>
+<span class="cc-phrase">I probably won't...</span>
+</div>
+
+<div style="background:var(--surface);border-radius:10px;padding:16px;margin:12px 0;">
+<h4 style="color:var(--accent);margin-bottom:8px;">💡 Sample Pitch:</h4>
+<p style="font-size:0.9rem;line-height:1.8;">
+"Hi, I'm Carlos. I'm studying business administration and I'm <strong>definitely</strong> looking for an internship in marketing. I <strong>probably</strong> need help connecting with people in the industry."
+</p>
+</div>
+
+<textarea id="pitch-text" rows="6" class="sb-input" placeholder="Write your elevator pitch here..."></textarea>
+<button class="btn small secondary" onclick="savePitch()" style="margin-top:12px;">💾 Save My Pitch (+5 XP)</button>
+<div id="pitch-fb" style="font-weight:700;margin-top:8px;"></div>
+</div>
+
+<div class="card" style="border:2px solid var(--secondary);">
+<h3>⚡ Step 3: Speed Networking Rounds (15 minutes)</h3>
+<p style="color:var(--muted);margin-bottom:12px;">Instructions for the teacher:</p>
+<ol style="margin-left:20px;line-height:2.2;color:var(--muted);font-size:0.9rem;">
+<li>Set up 2 rows of chairs facing each other (or breakout rooms if online)</li>
+<li>Each round = 2 minutes</li>
+<li>Students introduce themselves and share their elevator pitch</li>
+<li>Try to complete their mission</li>
+<li>After 2 minutes, one row rotates to the next person</li>
+<li>Repeat 5-6 times</li>
+</ol>
+
+<div style="background:var(--surface);border-radius:10px;padding:16px;margin:12px 0;">
+<h4 style="color:var(--accent);margin-bottom:8px;">🎯 Debrief Questions:</h4>
+<ul style="margin-left:20px;line-height:2;color:var(--muted);font-size:0.9rem;">
+<li>Who completed their mission?</li>
+<li>What was easy/hard about introducing yourself?</li>
+<li>What will you DEFINITELY do after this class?</li>
+<li>What will you PROBABLY do?</li>
+<li>Who made a good contact? How will you stay in touch?</li>
+</ul>
+</div>
+</div>
+
+<div class="bridge">🗣 Great networking! Now let's map your personal network. 🗺</div>
+</section>
+
+<!-- NETWORK MAP -->
+<section id="tab-network" class="tab-content">
+<h2 class="section-title">🗺 My Network Map</h2>
+<div class="bridge">
+Let's see what your network actually looks like!
+</div>
+
+<div class="card" style="border:2px solid var(--accent);">
+<h3>🎨 Step 1: Draw Your Network</h3>
+<p style="color:var(--muted);margin-bottom:12px;">Your network has 3 circles:</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0;">
+<div style="background:#05966922;border:2px solid var(--success);border-radius:10px;padding:12px;">
+<h4 style="color:var(--success);margin-bottom:6px;">🟢 Inner Circle</h4>
+<p style="font-size:0.85rem;color:var(--muted);">Family, close friends (people you talk to weekly)</p>
+</div>
+<div style="background:#F59E0B22;border:2px solid var(--accent);border-radius:10px;padding:12px;">
+<h4 style="color:var(--accent);margin-bottom:6px;">🟡 Middle Circle</h4>
+<p style="font-size:0.85rem;color:var(--muted);">Classmates, colleagues, acquaintances</p>
+</div>
+<div style="background:#F8717122;border:2px solid var(--error);border-radius:10px;padding:12px;">
+<h4 style="color:var(--error);margin-bottom:6px;">🔴 Outer Circle</h4>
+<p style="font-size:0.85rem;color:var(--muted);">People you've lost touch with, or want to meet</p>
+</div>
+</div>
+
+<div style="margin-top:16px;">
+<label style="font-weight:700;color:var(--success);display:block;margin-bottom:6px;">🟢 Inner Circle (list 3-5 people):</label>
+<textarea rows="3" class="sb-input" placeholder="e.g., Mom, Dad, Best friend María..."></textarea>
+</div>
+<div style="margin-top:12px;">
+<label style="font-weight:700;color:var(--accent);display:block;margin-bottom:6px;">🟡 Middle Circle (list 3-5 people):</label>
+<textarea rows="3" class="sb-input" placeholder="e.g., Classmate Carlos, Former teacher..."></textarea>
+</div>
+<div style="margin-top:12px;">
+<label style="font-weight:700;color:var(--error);display:block;margin-bottom:6px;">🔴 Outer Circle (list 3-5 people):</label>
+<textarea rows="3" class="sb-input" placeholder="e.g., High school friend I lost touch with..."></textarea>
+</div>
+</div>
+
+<div class="card" style="border:2px solid var(--primary-light);">
+<h3>🔍 Step 2: Network Analysis</h3>
+<p style="color:var(--muted);margin-bottom:12px;">Answer these questions about your network:</p>
+<div style="margin-top:12px;">
+<div style="margin-bottom:12px;">
+<label style="font-weight:700;color:var(--accent);display:block;margin-bottom:6px;">Which circle is strongest? Weakest?</label>
+<textarea rows="2" class="sb-input" placeholder="My inner circle is strongest because..."></textarea>
+</div>
+<div style="margin-bottom:12px;">
+<label style="font-weight:700;color:var(--accent);display:block;margin-bottom:6px;">Where are the gaps?</label>
+<textarea rows="2" class="sb-input" placeholder="I need to meet more people who..."></textarea>
+</div>
+<div>
+<label style="font-weight:700;color:var(--accent);display:block;margin-bottom:6px;">Who should I reconnect with?</label>
+<textarea rows="2" class="sb-input" placeholder="I should contact [name] because..."></textarea>
+</div>
+</div>
+<button class="btn secondary" onclick="saveNetworkAnalysis()" style="margin-top:12px;">💾 Save My Analysis (+5 XP)</button>
+<div id="network-fb" style="font-weight:700;margin-top:8px;"></div>
+</div>
+
+<div class="bridge">🗺 Great network map! Now let's create your action plan. 🏆</div>
+</section>
+
+<!-- WRAP-UP -->
+<section id="tab-wrapup" class="tab-content">
+<h2 class="section-title">🏆 Networking Action Plan</h2>
+<div class="bridge">
+Before you leave, create your concrete action plan for the next month.
+</div>
+
+<div class="card" style="border:2px solid var(--accent);">
+<h3>🎯 My Networking Pledge</h3>
+<p style="color:var(--muted);margin-bottom:12px;">Write your specific commitments:</p>
+
+<div style="background:var(--surface);border-radius:10px;padding:16px;margin:12px 0;">
+<div style="margin-bottom:16px;">
+<label style="font-weight:700;color:var(--success);display:block;margin-bottom:6px;">✅ I will DEFINITELY:</label>
+<textarea rows="2" class="sb-input" placeholder="e.g., contact my cousin who works at Google..."></textarea>
+</div>
+<div style="margin-bottom:16px;">
+<label style="font-weight:700;color:var(--accent);display:block;margin-bottom:6px;">🔄 I will PROBABLY:</label>
+<textarea rows="2" class="sb-input" placeholder="e.g., join a LinkedIn group for designers..."></textarea>
+</div>
+<div>
+<label style="font-weight:700;color:var(--error);display:block;margin-bottom:6px;">❌ I will NOT:</label>
+<textarea rows="2" class="sb-input" placeholder="e.g., wait until graduation to start networking..."></textarea>
+</div>
+</div>
+
+<button class="btn secondary" onclick="savePledge()" style="margin-top:12px;">💾 Save My Pledge (+10 XP)</button>
+<div id="pledge-fb" style="font-weight:700;margin-top:8px;"></div>
+</div>
+
+<div class="card" style="border:2px solid var(--primary-light);">
+<h3>🎉 Class 12 Complete!</h3>
+<p style="color:var(--muted);margin-bottom:12px;">You've mastered networking vocabulary, practiced real networking, and created your action plan!</p>
+<div style="background:var(--surface);border-radius:10px;padding:16px;margin:12px 0;">
+<h4 style="color:var(--accent);margin-bottom:8px;">📊 Your Stats:</h4>
+<p style="font-size:0.9rem;color:var(--muted);">Total XP earned today: <strong style="color:var(--accent);font-size:1.2rem;" id="final-xp">0</strong></p>
+</div>
+<button class="btn accent" onclick="showBadge()">🏆 Get My Badge</button>
+<div id="badge-container" style="display:none;margin-top:12px;text-align:center;">
+<span class="badge">🤝 Networking Pro!</span>
+</div>
+</div>
+</section>
+
+<!-- TEACHER ANSWERS -->
+<section id="tab-answers" class="tab-content">
+<div class="teacher-answers show">
+<h3>🎓 Teacher's Answer Sheet – Class 12</h3>
+
+<div class="answer-block">
+<strong>🎭 Warm-up: Networking Do's & Don'ts</strong><br>
+Correct answers:<br>
+1. Sending a LinkedIn request without a message → <strong>DON'T</strong><br>
+2. Asking a friend to introduce you to their boss → <strong>DO</strong><br>
+3. Messaging someone at 2 AM about a job → <strong>DON'T</strong><br>
+4. Asking "What do you do?" at a party → <strong>DO</strong><br>
+5. Adding someone's personal Instagram after meeting once → <strong>CREEPY</strong><br>
+6. Following up after a career fair with a thank-you email → <strong>DO</strong><br>
+7. Asking a stranger for money on LinkedIn → <strong>CREEPY</strong><br>
+8. Staying in touch with former colleagues → <strong>DO</strong><br>
+9. Memorizing someone's name and using it → <strong>DO</strong><br>
+10. Talking only about yourself for 10 minutes → <strong>DON'T</strong>
+</div>
+
+<div class="answer-block">
+<strong>🧠 Vocabulary: Fill in the Blanks</strong><br>
+1. get to know<br>
+2. intern<br>
+3. job hunting<br>
+4. stay in touch<br>
+5. make time for<br>
+6. contact<br>
+7. introduce yourself
+</div>
+
+<div class="answer-block">
+<strong>🎧 Listening: Check the Advice</strong><br>
+✓ speak to people in your office<br>
+✓ speak to old school friends<br>
+✓ join online groups<br>
+✓ go to career fairs<br>
+✓ write to companies
+</div>
+
+<div class="answer-block">
+<strong>✍️ Listen Again: Complete the Sentences</strong><br>
+1. talking to<br>
+2. stay in touch<br>
+3. share ideas<br>
+4. job opportunities<br>
+5. an intern<br>
+6. two minutes
+</div>
+
+<div class="answer-block">
+<strong>⚙ Grammar: Function Match</strong><br>
+1. c (present state or habit)<br>
+2. d (action in progress now)<br>
+3. a (past state or habit)<br>
+4. b (action in progress at a past moment)<br>
+5. e (action at an unspecific time in the past)
+</div>
+
+<div class="answer-block">
+<strong>💡 Quick Teaching Tips</strong><br>
+<strong>For the warm-up:</strong> The "Networking Do's & Don'ts" game gets students laughing while teaching real-world norms. The "CREEPY" option adds humor.<br><br>
+<strong>For vocabulary scenarios:</strong> Give students 5 minutes to prepare, then have pairs perform. Award bonus XP for the most creative dialogue.<br><br>
+<strong>For speed networking:</strong> Use a visible timer. Play soft background music to simulate a real event. After each round, have students write down ONE new contact they made.<br><br>
+<strong>For the network map:</strong> Encourage students to take a photo of their map and set it as a reminder to actually contact someone from their outer circle this week.
+</div>
+</div>
+</section>
+
+</main>
+</div>
+
+<script>
+// ============ NAVIGATION (FIXED VERSION) ============
+let totalXP = 0;
+const XP_MAX = 500;
+
+function openTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(t) {
+    t.classList.remove('active');
+  });
+  document.querySelectorAll('.tab-btn').forEach(function(b) {
+    b.classList.remove('active');
+  });
+  const target = document.getElementById(tabId);
+  if (target) {
+    target.classList.add('active');
+  }
+  document.querySelectorAll('.tab-btn').forEach(function(b) {
+    if (b.getAttribute('data-tab') === tabId) {
+      b.classList.add('active');
+    }
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Initialize navigation on page load
+document.addEventListener('DOMContentLoaded', function() {
+  const buttons = document.querySelectorAll('.tab-btn');
+  buttons.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const tabId = this.getAttribute('data-tab');
+      openTab(tabId);
+    });
+  });
+  
+  // Initialize all activities
+  renderVocabCards();
+});
+
+function addXP(amount) {
+  totalXP = Math.min(totalXP + amount, XP_MAX);
+  document.getElementById('xp-score').textContent = totalXP;
+  document.getElementById('xp-fill').style.width = (totalXP / XP_MAX * 100) + '%';
+  const el = document.getElementById('xp-score');
+  el.style.transform = 'scale(1.3)';
+  setTimeout(function() { el.style.transform = 'scale(1)'; }, 200);
+}
+
+// ============ WARM-UP: DO'S AND DON'TS ============
+const doDontData = [
+  { situation: "Sending a LinkedIn request to a recruiter without any message", answer: "dont", explanation: "Always add a personalized message! A blank request looks spammy." },
+  { situation: "Asking a friend to introduce you to their boss", answer: "do", explanation: "Warm introductions are the BEST way to network!" },
+  { situation: "Messaging a CEO at 2 AM asking for a job", answer: "dont", explanation: "Timing matters! Send messages during business hours." },
+  { situation: "Asking 'What do you do?' at a networking event", answer: "do", explanation: "Great conversation starter! But also ask about interests and passions." },
+  { situation: "Adding someone's personal Instagram after meeting them ONCE professionally", answer: "creepy", explanation: "Stick to LinkedIn for professional contacts unless they offer personal social media." },
+  { situation: "Following up after a career fair with a thank-you email", answer: "do", explanation: "Excellent! Follow-ups show you're serious and professional." },
+  { situation: "Messaging a stranger on LinkedIn asking to borrow $500", answer: "creepy", explanation: "Never mix money with networking. This is a huge red flag!" },
+  { situation: "Staying in touch with former colleagues even after changing jobs", answer: "do", explanation: "Your network is your net worth! Keep those connections alive." },
+  { situation: "Memorizing someone's name and using it during conversation", answer: "do", explanation: "People LOVE hearing their own name. It shows you care." },
+  { situation: "Talking only about yourself for 10 minutes straight", answer: "dont", explanation: "Networking is a two-way street. Listen as much as you talk!" }
+];
+
+let ddIdx = 0;
+let ddScore = 0;
+let ddStarted = false;
+
+function startDoDont() {
+  ddIdx = 0;
+  ddScore = 0;
+  ddStarted = true;
+  document.getElementById('do-dont-score').textContent = '0';
+  document.getElementById('do-dont-start-btn').style.display = 'none';
+  loadDoDont();
+}
+
+function loadDoDont() {
+  if (ddIdx >= doDontData.length) {
+    document.getElementById('do-dont-situation').innerHTML = '🎉 Game Over! You scored <strong>' + ddScore + ' / 10</strong>!';
+    document.getElementById('do-dont-buttons').style.display = 'none';
+    document.getElementById('do-dont-next-btn').style.display = 'none';
+    document.getElementById('do-dont-start-btn').style.display = 'inline-block';
+    document.getElementById('do-dont-start-btn').textContent = '🔄 Play Again';
+    addXP(Math.min(ddScore * 2, 20));
+    return;
+  }
+  
+  const item = doDontData[ddIdx];
+  document.getElementById('do-dont-round').textContent = ddIdx + 1;
+  document.getElementById('do-dont-situation').textContent = item.situation;
+  document.getElementById('do-dont-fb').textContent = '';
+  document.getElementById('do-dont-next-btn').style.display = 'none';
+  
+  const buttons = document.querySelectorAll('.verdict-btn');
+  buttons.forEach(function(b) {
+    b.disabled = false;
+    b.classList.remove('correct', 'wrong');
+  });
+}
+
+function voteVerdict(vote) {
+  if (!ddStarted) return;
+  const item = doDontData[ddIdx];
+  const buttons = document.querySelectorAll('.verdict-btn');
+  
+  buttons.forEach(function(b) { b.disabled = true; });
+  
+  if (vote === item.answer) {
+    ddScore++;
+    document.getElementById('do-dont-score').textContent = ddScore;
+    document.getElementById('do-dont-fb').innerHTML = '✅ <span style="color:var(--success)">Correct!</span> ' + item.explanation;
+    buttons.forEach(function(b) {
+      if (b.classList.contains(item.answer + '-btn')) b.classList.add('correct');
+    });
+    addXP(2);
+  } else {
+    document.getElementById('do-dont-fb').innerHTML = '❌ <span style="color:var(--error)">Wrong!</span> The answer is <strong>' + item.answer.toUpperCase() + '</strong>. ' + item.explanation;
+    buttons.forEach(function(b) {
+      if (b.classList.contains(vote + '-btn')) b.classList.add('wrong');
+      if (b.classList.contains(item.answer + '-btn')) b.classList.add('correct');
+    });
+  }
+  
+  document.getElementById('do-dont-next-btn').style.display = 'inline-block';
+}
+
+function nextDoDont() {
+  ddIdx++;
+  loadDoDont();
+}
+
+// ============ VOCABULARY ============
+const vocabData = [
+  { word: 'contact', def: 'Someone you know in a profession', example: 'My contact at Google helped me get an interview.' },
+  { word: 'get to know', def: 'To learn about someone over time', example: 'I want to get to know more people in marketing.' },
+  { word: 'intern', def: 'Someone who works for experience, usually unpaid', example: 'She worked as an intern at a law firm last summer.' },
+  { word: 'introduce yourself', def: 'To say hello and tell someone your name', example: 'Don\'t be shy—introduce yourself to the speaker!' },
+  { word: 'job hunting', def: 'Looking for work', example: 'I\'ve been job hunting for three months.' },
+  { word: 'make time for', def: 'To fit something into your schedule', example: 'You should make time for networking events.' },
+  { word: 'stay in touch', def: 'To continue communicating with someone', example: 'Let\'s stay in touch after the conference.' }
+];
+
+function renderVocabCards() {
+  const container = document.getElementById('vocab-cards');
+  if (!container) return;
+  container.innerHTML = '';
+  vocabData.forEach(function(v, i) {
+    const card = document.createElement('div');
+    card.style.cssText = 'background:var(--surface);border:2px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;transition:all 0.2s;';
+    card.innerHTML = '<div style="font-weight:700;color:var(--accent);margin-bottom:6px;">' + v.word + '</div><div style="font-size:0.85rem;color:var(--muted);">Click to reveal</div>';
+    card.onclick = function() {
+      card.innerHTML = '<div style="font-weight:700;color:var(--accent);margin-bottom:6px;">' + v.word + '</div><div style="font-size:0.85rem;color:var(--text);margin-bottom:6px;">' + v.def + '</div><div style="font-size:0.8rem;color:var(--muted);font-style:italic;">"' + v.example + '"</div>';
+      card.style.borderColor = 'var(--primary-light)';
+      addXP(1);
+    };
+    container.appendChild(card);
+  });
+}
+
+function checkVocabFill() {
+  const answers = ['get to know', 'intern', 'job hunting', 'stay in touch', 'make time for', 'contact', 'introduce yourself'];
+  let score = 0;
+  for (let i = 1; i <= 7; i++) {
+    const el = document.getElementById('v' + i);
+    if (!el) continue;
+    const val = el.value.trim().toLowerCase();
+    if (val === answers[i-1].toLowerCase()) {
+      el.classList.remove('wrong');
+      el.classList.add('correct');
+      score++;
+    } else if (val.length > 0) {
+      el.classList.remove('correct');
+      el.classList.add('wrong');
+    }
+  }
+  const fb = document.getElementById('vocab-fill-fb');
+  fb.textContent = '🎯 ' + score + ' / 7 correct!';
+  fb.style.color = score >= 6 ? 'var(--success)' : 'var(--accent)';
+  if (score === 7) addXP(10);
+}
+
+function saveDialogue() {
+  const text = document.getElementById('dialogue-text').value.trim();
+  const fb = document.getElementById('dialogue-fb');
+  if (text.length > 50) {
+    fb.textContent = '🎉 Great dialogue! +10 XP';
+    fb.style.color = 'var(--success)';
+    addXP(10);
+  } else {
+    fb.textContent = '⚠ Write a longer dialogue (at least 50 characters).';
+    fb.style.color = 'var(--error)';
+  }
+}
+
+// ============ LISTENING ============
+function agreeStatement(agreed) {
+  const fb = document.getElementById('agree-fb');
+  if (agreed) {
+    fb.textContent = '💭 Interesting! Many professionals agree. Let\'s see what the audio says...';
+    fb.style.color = 'var(--accent)';
+  } else {
+    fb.textContent = '💭 Good point! Skills matter too. Let\'s listen and compare...';
+    fb.style.color = 'var(--accent)';
+  }
+  addXP(2);
+}
+
+function checkAdvice() {
+  const correct = ['adv1', 'adv3', 'adv4', 'adv6', 'adv7'];
+  const all = ['adv1', 'adv2', 'adv3', 'adv4', 'adv5', 'adv6', 'adv7'];
+  let score = 0;
+  all.forEach(function(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const shouldBeChecked = correct.includes(id);
+    if (el.checked === shouldBeChecked) score++;
+  });
+  const fb = document.getElementById('advice-fb');
+  fb.textContent = '🎯 ' + score + ' / 7 correct!';
+  fb.style.color = score >= 6 ? 'var(--success)' : 'var(--accent)';
+  if (score === 7) addXP(10);
+}
+
+function checkListening() {
+  const answers = ['talking to', 'stay in touch', 'share ideas', 'job opportunities', 'an intern', 'two minutes'];
+  let score = 0;
+  for (let i = 1; i <= 6; i++) {
+    const el = document.getElementById('l' + i);
+    if (!el) continue;
+    const val = el.value.trim().toLowerCase();
+    if (val === answers[i-1].toLowerCase() || val.includes(answers[i-1].toLowerCase())) {
+      el.classList.remove('wrong');
+      el.classList.add('correct');
+      score++;
+    } else if (val.length > 0) {
+      el.classList.remove('correct');
+      el.classList.add('wrong');
+    }
+  }
+  const fb = document.getElementById('listening-fb');
+  fb.textContent = '🎯 ' + score + ' / 6 correct!';
+  fb.style.color = score >= 5 ? 'var(--success)' : 'var(--accent)';
+  if (score === 6) addXP(10);
+}
+
+// ============ GRAMMAR ============
+function checkGrammarMatch() {
+  const answers = { g1: 'c', g2: 'd', g3: 'a', g4: 'b', g5: 'e' };
+  let score = 0;
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById('g' + i);
+    if (!el) continue;
+    if (el.value === answers['g' + i]) {
+      el.style.borderColor = 'var(--success)';
+      el.style.background = '#05966922';
+      score++;
+    } else if (el.value) {
+      el.style.borderColor = 'var(--error)';
+      el.style.background = '#F8717122';
+    }
+  }
+  const fb = document.getElementById('grammar-match-fb');
+  fb.textContent = '🎯 ' + score + ' / 5 correct!';
+  fb.style.color = score === 5 ? 'var(--success)' : 'var(--accent)';
+  if (score === 5) addXP(10);
+}
+
+function saveTimeline() {
+  const textareas = document.querySelectorAll('#tab-grammar textarea');
+  let filled = 0;
+  textareas.forEach(function(ta) {
+    if (ta.value.trim().length > 10) filled++;
+  });
+  const fb = document.getElementById('timeline-fb');
+  if (filled >= 4) {
+    fb.textContent = '🎉 Excellent timeline! +10 XP';
+    fb.style.color = 'var(--success)';
+    addXP(10);
+  } else {
+    fb.textContent = '⚠ Write at least 4 sentences (10+ characters each).';
+    fb.style.color = 'var(--error)';
+  }
+}
+
+// ============ SPEAKING ============
+function selectMission(mission) {
+  const fb = document.getElementById('mission-fb');
+  fb.textContent = '🎯 Mission ' + mission + ' selected! Good luck!';
+  fb.style.color = 'var(--success)';
+  addXP(2);
+}
+
+function savePitch() {
+  const text = document.getElementById('pitch-text').value.trim();
+  const fb = document.getElementById('pitch-fb');
+  if (text.length > 50) {
+    fb.textContent = '🎉 Great pitch! +5 XP';
+    fb.style.color = 'var(--success)';
+    addXP(5);
+  } else {
+    fb.textContent = '⚠ Write a longer pitch (at least 50 characters).';
+    fb.style.color = 'var(--error)';
+  }
+}
+
+// ============ NETWORK MAP ============
+function saveNetworkAnalysis() {
+  const textareas = document.querySelectorAll('#tab-network textarea');
+  let filled = 0;
+  textareas.forEach(function(ta) {
+    if (ta.value.trim().length > 10) filled++;
+  });
+  const fb = document.getElementById('network-fb');
+  if (filled >= 4) {
+    fb.textContent = '🎉 Great analysis! +5 XP';
+    fb.style.color = 'var(--success)';
+    addXP(5);
+  } else {
+    fb.textContent = '⚠ Fill in at least 4 sections.';
+    fb.style.color = 'var(--error)';
+  }
+}
+
+// ============ WRAP-UP ============
+function savePledge() {
+  const textareas = document.querySelectorAll('#tab-wrapup textarea');
+  let filled = 0;
+  textareas.forEach(function(ta) {
+    if (ta.value.trim().length > 10) filled++;
+  });
+  const fb = document.getElementById('pledge-fb');
+  if (filled >= 3) {
+    fb.textContent = '🎉 Amazing commitment! +10 XP';
+    fb.style.color = 'var(--success)';
+    addXP(10);
+  } else {
+    fb.textContent = '⚠ Fill in all 3 pledges.';
+    fb.style.color = 'var(--error)';
+  }
+}
+
+function showBadge() {
+  document.getElementById('badge-container').style.display = 'block';
+  document.getElementById('final-xp').textContent = totalXP;
+  addXP(20);
+}
+</script>
+</body>
+</html>
